@@ -325,7 +325,8 @@ class DymoLabeler:
         # rows span the width of the label, and the first row corresponds to the left
         # edge of the label.
         rotated_bitmap = bitmap.transpose(Image.Transpose.ROTATE_270)
-        rotated_bitmap = rotated_bitmap.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
+        if self._device and self._device._is_rhino:
+            rotated_bitmap = rotated_bitmap.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
 
         # Convert the image to raw bytes. Pixels along rows are chunked into groups of
         # 8 pixels, and subsequent rows are concatenated.
@@ -337,10 +338,18 @@ class DymoLabeler:
             raise RuntimeError(
                 "An internal problem was encountered while processing the label bitmap!"
             )
-        label_rows: list[bytes] = [
-            bytes(mirror_byte(b) for b in stream[i: i + stream_row_length])
-            for i in range(0, len(stream), stream_row_length)
-        ]
+        
+        label_rows: list[bytes] = []
+        if self._device and self._device._is_rhino:
+            label_rows: list[bytes] = [
+                bytes(mirror_byte(b) for b in stream[i: i + stream_row_length])
+                for i in range(0, len(stream), stream_row_length)
+            ]
+        else:
+            label_rows: list[bytes] = [
+                stream[i: i + stream_row_length]
+                for i in range(0, len(stream), stream_row_length)
+            ]
 
         # Convert bytes into ints
         label_matrix: list[list[int]] = [

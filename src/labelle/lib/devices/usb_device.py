@@ -11,6 +11,7 @@ from labelle.lib.constants import (
     DEV_VENDOR,
     HID_INTERFACE_CLASS,
     PRINTER_INTERFACE_CLASS,
+    RHINO_PROD,
     SUPPORTED_PRODUCTS,
 )
 
@@ -84,6 +85,10 @@ class UsbDevice:
     @staticmethod
     def _is_supported_vendor(dev: usb.core.Device) -> bool:
         return dev.idVendor == DEV_VENDOR
+
+    @property
+    def _is_rhino(self) -> bool:
+        return self.id_product == RHINO_PROD
 
     @property
     def is_supported(self) -> bool:
