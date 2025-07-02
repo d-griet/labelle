@@ -95,11 +95,14 @@ class DymoLabelerFunctions:
                 cmd_to_send = self._cmd
                 cmd_rest = []
             else:
-                # Send a status request
-                cmdBin = array.array("B", [ESC, ord("A")])
-                cmdBin.tofile(self._devout)
-                rspBin = self._devin.read(512)
-                _ = array.array("B", rspBin).tolist()
+                status = None
+                while status is None or status[0] & 0x01 == 0:
+                    # Send a status request
+                    cmdBin = array.array("B", [ESC, ord("A")])
+                    cmdBin.tofile(self._devout)
+                    rspBin = self._devin.read(512)
+                    status = array.array("B", rspBin).tolist()
+
                 # Ok, we got a response. Now we can send a chunk of data
 
                 # Compute a chunk with at most synwait SYN characters
