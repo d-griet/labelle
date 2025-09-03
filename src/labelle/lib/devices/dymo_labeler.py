@@ -271,7 +271,7 @@ class DymoLabeler:
         return DymoLabelerFunctions(
             devout=self._device.devout,
             devin=self._device.devin,
-            synwait=64,
+            synwait=80,
         )
 
     @property
