@@ -119,7 +119,7 @@ class DymoLabelerFunctions:
                         break
                 cmd_to_send = self._cmd[:pos]
                 cmd_rest = self._cmd[pos:]
-                LOG.debug(f"Sending chunk of {len(cmd_to_send)} bytes")
+                LOG.debug(f"Sending chunk of {len(cmd_to_send)} bytes, last state {hex(status[0])}")
 
             # Remove the computed chunk from the command to be processed
             self._cmd = cmd_rest
